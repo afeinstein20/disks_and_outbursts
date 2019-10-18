@@ -1,0 +1,3 @@
+# Source model file example
+# shell number, Av [mag], nH [cm^-3], Tgas [K], Tdust [K]
+#

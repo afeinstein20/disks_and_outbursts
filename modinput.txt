@@ -1,0 +1,27 @@
+[files]
+source = source.mdl
+chem = umist12v2.chm
+# Physical parameters
+[phys]
+chi = 100.
+cosmic = 1.3e-19
+grain_size = 0.1
+grain_gas_mass_ratio = 0.0005
+# Solver parameters
+[solver]
+ti = 1e-6
+# Initial abundances
+[abundances]
+H2      = 0.5
+He      = 0.14
+N = 2.24e-5
+H2O = 2.5e-4
+CO = 1.e-4
+C = 7.1e-7
+N2 = 1.e-6
+# Output
+[output]
+time_steps = 2
+abundances = all
+
+
