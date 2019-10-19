@@ -54,7 +54,7 @@ class dynamical_astrochem(object):
         if track_fn is not None:
             self.track_fn = track_fn
         else:
-            self.track_fn = 'track.txt'
+            self.track_fn = self.path_fn.split('.')[0] + '.track'
 
         if out_fn is not None:
             self.out_fn = out_fn
