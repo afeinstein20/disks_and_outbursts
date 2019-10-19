@@ -265,10 +265,10 @@ class disk_model(object):
         else:
             self.lum_UV = ((self.flare-1) * factor) + base
 
-        
+            
     def default_file(self):
-        """                                                                                                     
-        Creates a default file name if one is not passed in.                                                    
+        """ 
+        Creates a default file name if one is not passed in.
         """
         today = date.today().strftime("%d%m%Y")
         fn = '{0}_Mstar{3}_r{1}_z{2}'.format(today,
@@ -289,12 +289,12 @@ class disk_model(object):
             self.fn = fn.split('.')[0]
 
         if self.lum_flare is None:
-            fn = self.fn + '_noflare.out'
+            self.path_fn = self.fn + '_noflare.out'
             luminosity = np.full(self.time.shape, self.Lstar)
             UV_lum = np.full(self.time.shape, 100)
             temp_array = np.full(self.time.shape, self.T)
         else:
-            fn = self.fn + '_flare.out'
+            self.path_fn = self.fn + '_flare.out'
             luminosity = self.lum_flare
 
             if self.lum_UV is None:
@@ -315,4 +315,5 @@ class disk_model(object):
         t.add_column(Column(data=np.full(self.time.shape, self.opacity.value), name='alpha'))
         t.add_column(Column(data=np.full(self.time.shape, self.tau.value), name='opt_depth'))
 
-        t.write(fn, format='ascii')
+        t.write(self.path_fn, format='ascii')
+        self.table = t
