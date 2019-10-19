@@ -1,6 +1,6 @@
 import numpy as np
 from datetime import date
-from scipy.special import erf
+from scipy.special import erfc
 from astropy import units as u
 from astropy import constants as c
 from astropy.table import Table, Column
@@ -149,7 +149,7 @@ class disk_model(object):
         tau : [g^2]
         """
         term1   = np.sqrt( (np.pi * self.H**2) / 2)
-        errfunc = erf(self.z / (np.sqrt(2) * self.H.to(u.AU)) )
+        errfunc = erfc(self.z / (np.sqrt(2) * self.H.to(u.AU)) )
         tau     = term1 * self.opacity * self.rho_o * errfunc
         self.tau = tau.to(u.g**2)
 
