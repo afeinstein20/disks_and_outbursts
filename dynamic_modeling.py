@@ -1,3 +1,4 @@
+import os
 import time
 import h5py as h5
 import numpy as np
@@ -34,12 +35,21 @@ class dynamical_astrochem(object):
             self.chi  = model.table['UV_lum'].data
         else:
             self.path_fn = path_fn
-            data = np.loadtxt(self.path_fn)
-            self.time = data[:,0] + 1.e-5
-            self.tgas = data[:,4]
-            self.rhos = 2*data[:,3]/2.3/1.67e-24
-            self.taus = data[:,6]*1.086
-            self.chi  = np.full(self.time.shape, 100)
+            try:
+                data = np.loadtxt(self.path_fn)
+                self.time = data[:,0] + 1.e-5
+                self.tgas = data[:,4]
+                self.rhos = 2*data[:,3]/2.3/1.67e-24
+                self.taus = data[:,6]*1.086
+                self.chi  = np.full(self.time.shape, 100)
+            except:
+                data = Table.read(self.path_fn, format='ascii')
+                self.time = data['time'].data
+                self.tgas = data['tgas'].data
+                self.rhos = data['n'].data
+                self.taus = data['opt_depth'].data
+                self.chi  = data['UV_lum'].data
+
 
         if track_fn is not None:
             self.track_fn = track_fn
@@ -116,7 +126,7 @@ class dynamical_astrochem(object):
         index passed in.
         """
         fsrc = open('source.mdl','w')
-        contents = split_file('modsrc.txt')
+        contents = self.split_file('modsrc.txt')
         contents.append("%i    %8.2f     %8.2e    %8.2f   %8.2f" %(0,self.taus[i],
                                                                    self.rhos[i],
                                                                    self.tgas[i],
@@ -130,22 +140,22 @@ class dynamical_astrochem(object):
         return
 
     def create_input_file(self, i):
-    """
-    Creates the new input.ini file.
-    """
-    finp=open('input.ini','w')
-    contents = split_file('modinput.txt')
+        """
+        Creates the new input.ini file.
+        """
+        finp=open('input.ini','w')
+        contents = self.split_file('modinput.txt')
+        
+        input_ini = []
+        
+        new_additions = False
 
-    input_ini = []
-
-    new_additions = False
-
-    # Takes modinput.txt --> input.ini
-    for j in range(len(contents)):
-        if contents[j] != '':
-            row = contents[j].split(' ')
-            row[-1] += '\n'
-
+        # Takes modinput.txt --> input.ini
+        for j in range(len(contents)):
+            if contents[j] != '':
+                row = contents[j].split(' ')
+                row[-1] += '\n'
+                
             non_dupes = ['[output]\n', 'time_steps',
                          'abundances']
 
@@ -156,7 +166,7 @@ class dynamical_astrochem(object):
                     if n in row:
                         finp.write(' '.join(str(e) for e in row))
 
-             else:
+            else:
                 if 'chi' in row:
                     finp.write('chi = {0}\n'.format(self.chi[i]))
                 else:
@@ -182,5 +192,5 @@ class dynamical_astrochem(object):
                             finp.write(' '.join(str(e) for e in line))
                         new_additions = True
 
-    finp.close()
-    return
+        finp.close()
+        return
