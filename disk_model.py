@@ -234,7 +234,9 @@ class disk_model(object):
         """
         if type(amp) == int or type(amp) == float:
             flare = self.flare_model(amp, t0_ind, rise, fall)
-            self.flare = flare
+
+            # Flare intensity falls as 1/r
+            self.flare = flare / (self.r.value)**2
             self.lum_flare = self.Lstar * self.flare
             
         else:
@@ -242,11 +244,12 @@ class disk_model(object):
             self.lum_flare = np.full(self.time.shape, self.Lstar)
             for i in range(len(amp)):
                 flare = self.flare_model(amp[i]-1, t0_ind[i], rise[i], fall[i])
-                self.flare *= flare
+                self.flare = self.flare * flare/(self.r.value)**2
 
             self.lum_flare = self.Lstar * self.flare
 
-        self.delta_T = self.T * ((self.lum_flare / c.L_sun)**0.25).value
+        lum_depend = ((self.lum_flare / c.L_sun)**0.25).value
+        self.delta_T = self.T + self.T * (lum_depend - np.nanmin(lum_depend))
 
 
     def UV_flare(self, base=10, factor=100):
@@ -265,7 +268,8 @@ class disk_model(object):
         lum_UV : array of chi values [unitless]
         """
         if self.flare is None:
-            raise ValueError("Please call disk_model.luminosity_flare() to set flares.")
+            print("No flare injected. Returning an array of base UV values.")
+            self.lum_UV = np.full(len(self.time), base)
         else:
             self.lum_UV = ((self.flare-1) * factor) + base
 
@@ -295,7 +299,6 @@ class disk_model(object):
         if self.lum_flare is None:
             self.path_fn = self.fn + '_noflare.out'
             luminosity = np.full(self.time.shape, self.Lstar)
-            UV_lum = np.full(self.time.shape, 100)
             temp_array = np.full(self.time.shape, self.T)
         else:
             self.path_fn = self.fn + '_flare.out'
@@ -303,14 +306,13 @@ class disk_model(object):
 
             if self.lum_UV is None:
                 raise ValueError("You forgot to update the UV flux with your flare.")
-            
-            UV_lum = self.lum_UV
+    
             temp_array = self.delta_T
                 
         t = Table()
         t.add_column(Column(data=self.time, name='time'))
         t.add_column(Column(data=luminosity, name='lum'))
-        t.add_column(Column(data=UV_lum, name='UV_lum'))
+        t.add_column(Column(data=self.lum_UV, name='UV_lum'))
         t.add_column(Column(data=np.full(self.time.shape, self.r.to(u.AU).value), name='r'))
         t.add_column(Column(data=np.full(self.time.shape, self.z.to(u.AU).value), name='z'))
         t.add_column(Column(data=np.full(self.time.shape, self.rho.to(u.g/u.cm**3).value), 
