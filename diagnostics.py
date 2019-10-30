@@ -3,13 +3,6 @@ import matplotlib.gridspec as gridspec
 from pylab import *
 
 COLORMAP = 'viridis'
-CMAP = cm.get_cmap(COLORMAP, 21)
-COLORS = []
-for i in range(CMAP.N):
-    rgb = CMAP(i)[:3]
-    COLORS.append(matplotlib.colors.rgb2hex(rgb))
-COLORS = np.array(COLORS)
-
 
 def one_to_one(ax, low, upp, delta):
     """ Adds a 1 to 1 line to a subplot. """
@@ -20,7 +13,7 @@ def one_to_one(ax, low, upp, delta):
 
 
 def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
-                      UV=0, save=False):
+                      UV=1, save=False):
     """
     Creates a diagnostic plot comparing the results
     from two different tables (t1 & t2) at given indices
@@ -42,8 +35,15 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
          UV = 1 --> Uses the second input table.
     save : gives the option to save the figure or not.
     """
+    cmap = cm.get_cmap(COLORMAP, len(locs)+1)
+    colors = []
+    for i in range(cmap.N):
+        rgb = cmap(i)[:3]
+        colors.append(matplotlib.colors.rgb2hex(rgb))
+    colors = np.array(colors)
+
     fig = plt.figure(tight_layout=True, figsize=(14,15))
-    gs  = gridspec.GridSpec(len(locs)-1, 2)
+    gs  = gridspec.GridSpec(int(len(locs)/2)+2, 2)
     # Plotting the UV flux
     ax = fig.add_subplot(gs[0,:])
 
@@ -54,25 +54,21 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
 
     ax.plot(time, UV_lum, 'k')
 
-    c = 1
-    subcolors = []
-    for l in locs:
+    for c, l in enumerate(locs):
         ax.plot(time[l], UV_lum[l], '.',
-                c=COLORS[c], ms=20, label=np.round(time[l],3))
-        subcolors.append(COLORS[c])
-        c += 2
+                c=colors[c], ms=20, label=np.round(time[l],3))
 
     ax.set_yscale('log')
     ax.set_ylabel('UV Luminosity')
     ax.set_xlabel('Time [Days]')
-    ax.legend()
+    ax.legend(ncol=3)
     ax.set_title('R = {}AU, z/R = {}'.format(r, zR))
 
     # Sets marker size for plot
     ms = 10
 
     # Sets the middle plots
-    rowlim = np.arange(1, len(locs)-2, 1, dtype=int)
+    rowlim = np.arange(1, int(len(locs)/2)+1, 1, dtype=int)
     collim = np.arange(0, 2, 1, dtype=int)
     
     l = 1
@@ -83,9 +79,9 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
             
             for colname in t1.colnames:
                 ax.plot( t1[colname].data[locs[l-1]], t2[colname].data[locs[l-1]], '.',
-                         c=subcolors[l-1], ms=ms )
+                         c=colors[l-1], ms=ms )
                 ax.plot( t1[colname].data[locs[l]], t2[colname].data[locs[l]], '.',
-                         c=subcolors[l], ms=ms)
+                         c=colors[l], ms=ms)
 
             ax.set_yscale('log')
             ax.set_xscale('log')
@@ -100,12 +96,12 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
 
 
     # Sets the final plot
-    ax = fig.add_subplot(gs[len(locs)-2,:])
+    ax = fig.add_subplot(gs[int(len(locs)/2)+1,:])
     one_to_one(ax, 0, 1000, 1)
 
     for colname in t1.colnames:
-        ax.plot(t1[colname].data[locs[0]],  t2[colname].data[locs[0]],  '.', c=subcolors[0],  ms=ms)
-        ax.plot(t1[colname].data[locs[-1]], t2[colname].data[locs[-1]], '.', c=subcolors[-1], ms=ms)
+        ax.plot(t1[colname].data[locs[0]],  t2[colname].data[locs[0]],  '.', c=colors[0],  ms=ms)
+        ax.plot(t1[colname].data[locs[-1]], t2[colname].data[locs[-1]], '.', c=colors[-2], ms=ms)
     ax.set_yscale('log')
     ax.set_xscale('log')
     ax.set_xlabel('Abundance w/o Flare')
