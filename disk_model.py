@@ -11,7 +11,7 @@ class disk_model(object):
 
     def __init__(self, r=1, z=0.03,
                  Mstar=1, gas_dist=2000,
-                 opacity=0.01,
+                 opacity=0.01, zR=None,
                  time=np.linspace(0,5,1000)):
         """
         Parameters
@@ -32,7 +32,11 @@ class disk_model(object):
         time : array of times [years, unless units otherwise specified]
         """
         self.r = r*u.AU
-        self.z = z*u.AU
+
+        if zR is not None:
+            self.z = self.r * zR
+        else:
+            self.z = z*u.AU
         self.opacity = opacity * u.cm**2 * u.g
 
         self.midplane_temp()
@@ -148,9 +152,9 @@ class disk_model(object):
         ---------- 
         tau : [g^2]
         """
-        term1   = np.sqrt( (np.pi * self.H**2) / 2)
-        errfunc = erfc(self.z / (np.sqrt(2) * self.H.to(u.AU)) )
-        tau     = term1 * self.opacity * self.rho_o * errfunc
+        term1 = ((np.pi*self.H.to(u.cm)**2.0)/2.0)**0.5
+        errfunc = erfc( (self.z/self.H).to(u.cm/u.cm) * 2**-0.5 )
+        tau = term1 * self.opacity * self.rho_o * errfunc
         self.tau = tau.to(u.g**2)
 
 
