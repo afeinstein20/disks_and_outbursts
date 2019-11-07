@@ -10,6 +10,7 @@ grain_gas_mass_ratio = 0.0005
 # Solver parameters
 [solver]
 ti = 1e-6
+tf = 1e6
 # Initial abundances
 [abundances]
 H2      = 0.5
