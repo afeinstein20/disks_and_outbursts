@@ -12,7 +12,7 @@ class disk_model(object):
     def __init__(self, r=1, z=0.03,
                  Mstar=1, gas_dist=2000,
                  opacity=0.01, zR=None,
-                 time=np.linspace(0,5,1000)):
+                 time=np.arange(0,120,1)):
         """
         Parameters
         ---------- 
@@ -208,8 +208,8 @@ class disk_model(object):
         return flare+1
 
 
-    def luminosity_flare(self, amp=100, t0_ind=200,
-                         rise=0.0002, fall=0.03):
+    def luminosity_flare(self, amp=100, t0_ind=30,
+                         rise=0.0002, fall=2):
         """
         Injects a flare-like shape into the luminosity of the star
         over time. Can pass in a list of all parameters for multiple
@@ -234,23 +234,23 @@ class disk_model(object):
         """
         if type(amp) == int or type(amp) == float:
             flare = self.flare_model(amp, t0_ind, rise, fall)
+            lum_flare = flare / (4 * np.pi * self.r.value**2)
 
-            # Flare intensity falls as 1/r
-            self.flare = flare / (self.r.value)**2
-            self.lum_flare = self.Lstar * self.flare
-            
         else:
             self.flare = np.ones(self.time.shape)
             self.lum_flare = np.full(self.time.shape, self.Lstar)
             for i in range(len(amp)):
-                flare = self.flare_model(amp[i]-1, t0_ind[i], rise[i], fall[i])
-                self.flare = self.flare * flare/(self.r.value)**2
+                flare += self.flare_model(amp[i]-1, t0_ind[i], rise[i], fall[i])
+                lum_flare += flare / (4 * np.pi * self.r.value**2)
 
-            self.lum_flare = self.Lstar * self.flare
-
-        lum_depend = ((self.lum_flare / c.L_sun)**0.25).value
-        self.delta_T = self.T + self.T * (lum_depend - np.nanmin(lum_depend))
-
+        if self.flare is None:
+            self.flare = flare
+            self.lum_flare = self.Lstar * lum_flare
+            self.flare_count = 1
+        else:
+            self.flare += flare
+            self.lum_flare = self.lum_flare + lum_flare*u.W
+            self.flare_count += 1
 
     def UV_flare(self, base=10, factor=100):
         """
@@ -269,9 +269,11 @@ class disk_model(object):
         """
         if self.flare is None:
             print("No flare injected. Returning an array of base UV values.")
-            self.lum_UV = np.full(len(self.time), base)
+            self.lum_UV  = np.full(len(self.time), base)
         else:
-            self.lum_UV = ((self.flare-1) * factor) + base
+            flare = self.flare - self.flare_count
+            flare = flare / (4 * np.pi * self.r.value**2)
+            self.lum_UV = (flare * factor) + base
 
             
     def default_file(self):
@@ -299,15 +301,12 @@ class disk_model(object):
         if self.lum_flare is None:
             self.path_fn = self.fn + '_noflare.out'
             luminosity = np.full(self.time.shape, self.Lstar)
-            temp_array = np.full(self.time.shape, self.T)
         else:
             self.path_fn = self.fn + '_flare.out'
             luminosity = self.lum_flare
 
             if self.lum_UV is None:
                 raise ValueError("You forgot to update the UV flux with your flare.")
-    
-            temp_array = self.delta_T
                 
         t = Table()
         t.add_column(Column(data=self.time, name='time'))
@@ -317,7 +316,7 @@ class disk_model(object):
         t.add_column(Column(data=np.full(self.time.shape, self.z.to(u.AU).value), name='z'))
         t.add_column(Column(data=np.full(self.time.shape, self.rho.to(u.g/u.cm**3).value), 
                             name='n'))
-        t.add_column(Column(data=temp_array, name='tgas'))
+        t.add_column(Column(data=np.full(self.time.shape, self.T), name='tgas'))
         t.add_column(Column(data=np.full(self.time.shape, self.opacity.value), name='alpha'))
         t.add_column(Column(data=np.full(self.time.shape, self.tau.value), name='opt_depth'))
 

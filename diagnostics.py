@@ -60,7 +60,7 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
 
     ax.set_yscale('log')
     ax.set_ylabel('UV Luminosity')
-    ax.set_xlabel('Time [Days]')
+    ax.set_xlabel('Time [Hours]')
     ax.legend(ncol=3)
     ax.set_title('R = {}AU, z/R = {}'.format(r, zR))
 
