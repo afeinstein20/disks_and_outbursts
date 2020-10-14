@@ -12,7 +12,9 @@ def one_to_one(ax, low, upp, delta):
     return
 
 
-def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
+def time_step_compare(t1, t2, r, zR, locs, 
+                      opacity, density,
+                      time, UV_lum,
                       UV=1, save=False):
     """
     Creates a diagnostic plot comparing the results
@@ -71,17 +73,16 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
     rowlim = np.arange(1, int(len(locs)/2)+1, 1, dtype=int)
     collim = np.arange(0, 2, 1, dtype=int)
     
-    l = 1
+    l = 0
     for row in rowlim:
         for col in collim:
             ax = fig.add_subplot(gs[row, col])
             one_to_one(ax, 0, 1000, 1)
             
-            for colname in t1.colnames:
-                ax.plot( t1[colname].data[locs[l-1]], t2[colname].data[locs[l-1]], '.',
-                         c=colors[l-1], ms=ms )
-                ax.plot( t1[colname].data[locs[l]], t2[colname].data[locs[l]], '.',
-                         c=colors[l], ms=ms)
+            ax.plot( t1[locs[l-1]], t2[locs[l-1]], '.',
+                     c=colors[l-1], ms=ms )
+            ax.plot( t1[locs[l]], t2[locs[l]], '.',
+                     c=colors[l], ms=ms)
 
             ax.set_yscale('log')
             ax.set_xscale('log')
@@ -99,9 +100,8 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
     ax = fig.add_subplot(gs[int(len(locs)/2)+1,:])
     one_to_one(ax, 0, 1000, 1)
 
-    for colname in t1.colnames:
-        ax.plot(t1[colname].data[locs[0]],  t2[colname].data[locs[0]],  '.', c=colors[0],  ms=ms)
-        ax.plot(t1[colname].data[locs[-1]], t2[colname].data[locs[-1]], '.', c=colors[-2], ms=ms)
+    ax.plot(t1[locs[0]], t1[locs[0]], '.', c=colors[0], ms=ms)
+    ax.plot(t1[locs[-1]], t1[locs[-1]], '.', c=colors[-2], ms=ms)
     ax.set_yscale('log')
     ax.set_xscale('log')
     ax.set_xlabel('Abundance w/o Flare')
@@ -115,7 +115,8 @@ def time_step_compare(t1, t2, r, zR, locs, time, UV_lum,
         return fig
 
     else:
-        plt.savefig('r{}_zR{}_diagnostic.png'.format(r, zR), rasterize=True,
+        plt.savefig('r{}_zR{}_{}_{}_diagnostic.png'.format(r, zR, opacity, density), 
+                    rasterize=True,
                     bbox_inches='tight', dpi=300)
         plt.close()
     

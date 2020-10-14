@@ -11,7 +11,7 @@ class disk_model(object):
 
     def __init__(self, r=1, z=0.03,
                  Mstar=1, gas_dist=2000,
-                 opacity=0.01, zR=None,
+                 opacity=1.0, zR=None,
                  time=np.arange(0,120,1)):
         """
         Parameters
@@ -32,6 +32,7 @@ class disk_model(object):
         time : array of times [years, unless units otherwise specified]
         """
         self.r = r*u.AU
+        self.gas_dist = gas_dist * u.g / u.cm**2
 
         if zR is not None:
             self.z = self.r * zR
@@ -45,9 +46,10 @@ class disk_model(object):
         self.Mstar = Mstar*c.M_sun
         self.Lstar = 0.23 * (self.Mstar/c.M_sun).value**2.3 * c.L_sun
 
-        self.time = time
         if type(time) != u.quantity.Quantity:
-            self.time *= u.day
+            self.time = time * u.day
+        else:
+            self.time = time
 
         self.scale_height()
         self.init_density(gas_dist * u.g / u.cm**2)
@@ -99,7 +101,7 @@ class disk_model(object):
         ---------- 
         rho_o : [g cm^-3]
         """
-        sigma_o = self.surface_density(r=0*u.AU, gas_dist=gas_dist)
+        sigma_o = self.surface_density(r=self.r, gas_dist=gas_dist)
         rho_o = sigma_o / (np.sqrt(2*np.pi) * self.H)
         self.rho_o = rho_o.to(u.g / u.cm**3)
 
@@ -281,10 +283,12 @@ class disk_model(object):
         Creates a default file name if one is not passed in.
         """
         today = date.today().strftime("%d%m%Y")
-        fn = '{0}_Mstar{3}_r{1}_z{2}'.format(today,
-                                             self.r.to(u.AU).value,
-                                             self.z.to(u.AU).value,
-                                             np.round(self.Mstar.to(c.M_sun).value,2))
+        fn = '{0}_Mstar{3}_r{1}_z{2}_k{4}_sigma{5}'.format(today,
+                                                           self.r.to(u.AU).value,
+                                                           self.z.to(u.AU).value,
+                                                           np.round(self.Mstar.to(c.M_sun).value,2),
+                                                           np.round(self.opacity.value, 2),
+                                                           np.round(self.gas_dist.value, 0))
         self.fn = fn
 
 
