@@ -1,0 +1,11 @@
+2               Format number of this file
+2               Nr of dust species
+============================================================================
+1               Way in which this dust species is read
+0               0=Thermal grain
+atmosphere      Extension of name of dustkappa_***.inp file
+----------------------------------------------------------------------------
+1               Way in which this dust species is read
+0               0=Thermal grain
+midplane        Extension of name of dustkappa_***.inp file
+----------------------------------------------------------------------------
