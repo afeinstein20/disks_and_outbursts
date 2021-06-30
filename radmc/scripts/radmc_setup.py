@@ -21,7 +21,8 @@ def setup(PATH, models=['fiducial'], star_params={}):
 
     save_mod_params(mod_name=models[0], 
                     star_dict=star_params, 
-                    mod_path=os.path.join(modpath, models[0]))
+                    mod_path=os.path.join(modpath, models[0])
+                   )
 
 #    os.system('python save_model_params.py')
 
@@ -34,10 +35,10 @@ def setup(PATH, models=['fiducial'], star_params={}):
 
         os.system('cp %s/dustkappa_atmosphere.inp .' %(PATH))
         os.system('cp %s/dustkappa_midplane.inp .' %(PATH))
-        
+
         setup_radmc(mi)
         os.system('rm -rf nohup.out')
-        os.system('nohup radmc3d mctherm')
+        os.system('nohup ./radmc3d mctherm')
         print('completed thermal mc')
         save_gasdisk(mi, mod)
         
