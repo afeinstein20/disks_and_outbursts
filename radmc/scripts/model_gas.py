@@ -4,9 +4,11 @@ import numpy as np
 import sys
 import os
 import csv
-from constants import *
+from .constants import *
 import dill as pickle
-from disk_eqns import T_rho_gas
+from .disk_eqns import T_rho_gas
+
+__all__ = ['save_gasdisk']
 
 def save_gasdisk(mi, mod):
 

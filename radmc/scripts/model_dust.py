@@ -1,8 +1,10 @@
 import numpy as np
 import os
-from constants import *
+from .constants import *
 import sys
-import disk_eqns as de
+from .disk_eqns import *
+
+__all__ = ['setup_radmc']
 
 def setup_radmc(mi):
 
@@ -45,7 +47,7 @@ def setup_radmc(mi):
             r_cyl = rr*np.sin(tt)
             zz = rr*np.cos(tt)
 
-            rho_atm, rho_mid = de.rho_dust_2(r_cyl, zz, mi)
+            rho_atm, rho_mid = rho_dust_2(r_cyl, zz, mi)
             rhodust_list_a.append(rho_atm)
             rhodust_list_m.append(rho_mid)
 

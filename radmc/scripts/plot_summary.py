@@ -4,7 +4,7 @@ import dill as pickle
 import sys
 import csv
 from scipy.interpolate import griddata
-from constants import *
+from .constants import *
 import radmc3dPy as rmc
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -21,6 +21,8 @@ mpl.rcParams['xtick.major.size'] = 5
 mpl.rcParams['ytick.major.size'] = 5
 mpl.rcParams['xtick.minor.size'] = 3
 mpl.rcParams['ytick.minor.size'] = 3
+
+__all__ = ['plot_model']
 
 def plot_model(mi, mod):
 

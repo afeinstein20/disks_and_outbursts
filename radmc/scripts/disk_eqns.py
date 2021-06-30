@@ -1,8 +1,11 @@
 import numpy as np
-from constants import *
+from .constants import *
 import radmc3dPy as rmc
 from scipy.integrate import odeint, simps, quad
 from scipy.interpolate import interp1d
+
+__all__ = ['Tdust', 'sigma_dust', 'rho_dust_2', 'sigma_gas', 'T_rho_gas']
+           
 
 def Tdust(rr, zz):
     ''''Dust temperature (output from radmc3d dust radiative transfer) at rr, zz based on nearest

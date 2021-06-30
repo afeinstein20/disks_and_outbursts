@@ -1,38 +1,44 @@
 import numpy as np
 import os
 import sys
-from constants import *
-import model_dust as mod_dust
-import model_gas as mod_gas
+from .constants import *
+from .model_dust import setup_radmc
+from .model_gas import save_gasdisk
 import yaml
-import plot_summary as ps
+from .save_model_params import save_mod_params
+from .plot_summary import plot_model
 
-PATH = "/Users/jenniferbergner/Research/adina_flares/radmc/"
-sys.path.append(PATH + 'scripts/')
+__all__ = ['setup']
 
-models = ['fiducial']
-modpath = PATH + "models/"
+def setup(PATH, models=['fiducial'], star_params={}):
 
-for mod in models:
-    if not os.path.exists('%s%s/' %(modpath, mod)):
-        os.system('mkdir %s%s/' %(modpath, mod))
+    sys.path.append(PATH + 'scripts/')
+    modpath = os.path.join(PATH, "models/")
+    
+    for mod in models:
+        if not os.path.exists('%s%s/' %(modpath, mod)):
+            os.system('mkdir %s%s/' %(modpath, mod))
 
-os.system('python save_model_params.py')
+    save_mod_params(mod_name=models[0], 
+                    star_dict=star_params, 
+                    mod_path=os.path.join(modpath, models[0]))
 
-for mod in models:
-    print(mod)
-    os.chdir(modpath + mod)
+#    os.system('python save_model_params.py')
 
-    with open('model_inputs.yaml') as infile:
-        mi = yaml.load(infile, Loader=yaml.CLoader)
+    for mod in models:
+        print(mod)
+        os.chdir(modpath + mod)
+        
+        with open('model_inputs.yaml') as infile:
+            mi = yaml.load(infile, Loader=yaml.CLoader)
 
-    os.system('cp %s/dustkappa_atmosphere.inp .' %(PATH))
-    os.system('cp %s/dustkappa_midplane.inp .' %(PATH))
-
-    mod_dust.setup_radmc(mi)
-    os.system('rm -rf nohup.out')
-    os.system('nohup radmc3d mctherm')
-    print('completed thermal mc')
-    mod_gas.save_gasdisk(mi, mod)
-
-    ps.plot_model(mi, mod)
+        os.system('cp %s/dustkappa_atmosphere.inp .' %(PATH))
+        os.system('cp %s/dustkappa_midplane.inp .' %(PATH))
+        
+        setup_radmc(mi)
+        os.system('rm -rf nohup.out')
+        os.system('nohup radmc3d mctherm')
+        print('completed thermal mc')
+        save_gasdisk(mi, mod)
+        
+        plot_model(mi, mod)
