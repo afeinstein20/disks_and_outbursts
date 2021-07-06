@@ -1,0 +1,9 @@
+As is, this code uses radmc to solve for the dust thermal structure of a TW-Hya like disk, then maps on a gas density & temperature structure.
+
+You should primarily need to interact with radmc_setup.py and save_model_params.py.
+
+To modify the disk structure, update parameter values in the top of save_model_params. Right now the model is called 'fiducial', you can change this to keep your various models separate.  (Note: The stellar spectrum is calculated as a blackbody based on T_star.  Down the road, we can add in an additional UV component to mimick variations in the accretion luminosity if needed.)
+
+Next, rename the model in radmc_setup to be consistent, and run this code. Eventually you can loop through models with different structures, but for now it does just one at a time.
+
+All outputs are saved within models/<model name>/. You will generate a figure <model name>_summary.png with a basic plot of disk structure for each model.
