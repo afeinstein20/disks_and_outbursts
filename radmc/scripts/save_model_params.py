@@ -9,8 +9,8 @@ def save_mod_params(mod_name, mod_path, star_dict={}):
     # disk parameters
     # Huang+ 2018
     r_in = 0.05      # Inner radius (AU)
-    r_out = 200     # Outer (gas disk) radius (AU)
-    r_peb = 200     # Outer (pebble disk) radius (AU)
+    r_out = 30     # Outer (gas disk) radius (AU)
+    r_peb = 30     # Outer (pebble disk) radius (AU)
     
     # Cleeves+ 2015
     H_c = 15        # Scale height at R_H AU (AU)
@@ -24,7 +24,7 @@ def save_mod_params(mod_name, mod_path, star_dict={}):
     
     # star parameters
     # Cleeves+ 2015
-    keys = np.array(star_dict.keys())
+    keys = np.array(list(star_dict.keys()))
     if 'T_star' in keys:
         T_star = star_dict['T_star'] + 0.0
     else:
@@ -64,7 +64,7 @@ def save_mod_params(mod_name, mod_path, star_dict={}):
     zq = 4          # temperature coupling scale height
     
     # grid parameters
-    nr = 90
+    nr = 95
     ntheta = 80
     nphot = 1000000
 
@@ -98,6 +98,7 @@ def save_mod_params(mod_name, mod_path, star_dict={}):
             'nphot: %1.0f' %(nphot)
             ]
     
+    print(ff)
     with open(ff, 'w+') as wfile:
         wfile.write('# %s model inputs\n' %(mod_name))
         for ii in inps:

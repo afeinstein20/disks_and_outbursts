@@ -34,8 +34,8 @@ def plot_model(mi, mod):
         plt.setp(ax[xx].get_yticklabels(), visible = False)
     ax[0].set_xlabel("R (AU)")
     ax[0].set_ylabel("Z (AU)", labelpad = 1)
-    ax[0].set_xlim((0,200))
-    ax[0].set_ylim((-0.1,100))
+    ax[0].set_xlim((0,mi['rout']))
+    ax[0].set_ylim((-0.1,20))
 
     dcmap = mpl.cm.get_cmap('BuPu')
     dcmap.set_under('w')

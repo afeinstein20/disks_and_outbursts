@@ -7,10 +7,12 @@ from .model_gas import save_gasdisk
 import yaml
 from .save_model_params import save_mod_params
 from .plot_summary import plot_model
+from .save_spec import save_spectrum
+from .model_dust_inputstar import setup_uv
 
 __all__ = ['setup']
 
-def setup(PATH, models=['fiducial'], star_params={}):
+def setup(PATH, models=['fiducial'], star_params={}, uv=True):
 
     sys.path.append(PATH + 'scripts/')
     modpath = os.path.join(PATH, "models/")
@@ -24,8 +26,6 @@ def setup(PATH, models=['fiducial'], star_params={}):
                     mod_path=os.path.join(modpath, models[0])
                    )
 
-#    os.system('python save_model_params.py')
-
     for mod in models:
         print(mod)
         os.chdir(modpath + mod)
@@ -33,10 +33,19 @@ def setup(PATH, models=['fiducial'], star_params={}):
         with open('model_inputs.yaml') as infile:
             mi = yaml.load(infile, Loader=yaml.CLoader)
 
+        ## Adds in UV component
+        save_spectrum(mi, PATH, os.path.join(modpath, models[0]))
+
         os.system('cp %s/dustkappa_atmosphere.inp .' %(PATH))
         os.system('cp %s/dustkappa_midplane.inp .' %(PATH))
 
-        setup_radmc(mi)
+
+        if uv == True:
+            setup_uv(mi)
+        else:
+            setup_radmc(mi)
+
+
         os.system('rm -rf nohup.out')
         os.system('nohup ./radmc3d mctherm')
         print('completed thermal mc')
