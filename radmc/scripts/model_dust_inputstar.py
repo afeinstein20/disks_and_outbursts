@@ -89,8 +89,8 @@ def setup_uv(mi):
         for ll in lam:
             ff.write('%13.6e\n' %(ll))
         for ll in flux:
-            ff.write('13.6e\n' %(ll))
-
+            ff.write('%13.6e\n' %(ll))
+        print(lam, flux)
 
     ################################
     ###### CONTROL PARAMETERS ######
