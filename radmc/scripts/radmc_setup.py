@@ -14,7 +14,7 @@ __all__ = ['setup']
 
 def setup(PATH, models=['fiducial'], star_params={}, uv=True):
 
-    sys.path.append(PATH + 'scripts/')
+#    sys.path.append(PATH + 'scripts/')
     modpath = os.path.join(PATH, "models/")
     
     for mod in models:
