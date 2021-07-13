@@ -4,13 +4,32 @@ from .constants import *
 
 __all__ = ['save_mod_params']
 
-def save_mod_params(mod_name, mod_path, star_dict={}):
+def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}):
 ####### Fiducial disk parameters (TW Hya-like) #######
+    disk_keys = np.array(list(disk_dict.keys()))
+    star_keys = np.array(list(star_dict.keys()))
+
     # disk parameters
     # Huang+ 2018
-    r_in = 0.05      # Inner radius (AU)
-    r_out = 30     # Outer (gas disk) radius (AU)
-    r_peb = 30     # Outer (pebble disk) radius (AU)
+    if 'r_in' in disk_keys: # Inner radius (AU)
+        r_in = disk_dict['r_in'] + 0.0
+    else:
+        r_in   = 0.05  
+
+    if 'r_out' in disk_keys: # Outer (gas disk) radius (AU)
+        r_out = disk_dict['r_out'] + 0.0
+    else:
+        r_out  = 30
+
+    if 'r_peb' in disk_keys: # Outer (pebble disk) radius (AU)
+        r_peb = disk_dict['r_peb'] + 0.0
+    else:
+        r_peb  = 30
+
+    if 'r_snow' in disk_keys: # Snow line radius (AU)
+        r_snow = disk_dict['r_snow'] + 0.0
+    else:
+        r_snow = 5
     
     # Cleeves+ 2015
     H_c = 15        # Scale height at R_H AU (AU)
@@ -24,33 +43,32 @@ def save_mod_params(mod_name, mod_path, star_dict={}):
     
     # star parameters
     # Cleeves+ 2015
-    keys = np.array(list(star_dict.keys()))
-    if 'T_star' in keys:
+    if 'T_star' in star_keys:
         T_star = star_dict['T_star'] + 0.0
     else:
         T_star = 4110     # Stellar effective temperature (K)
 
-    if 'L_star' in keys:
+    if 'L_star' in star_keys:
         L_star = star_dict['L_star'] + 0.0
     else:
         L_star = 0.54      # Stellar bolometric luminosity (Lsol)
     
-    if 'L_uv_star' in keys:
+    if 'L_uv_star' in star_keys:
         L_uv_star = star_dict['L_uv_star']/lsol + 0.0
     else:
         L_uv_star = 2.9e31/lsol  # Stellar UV luminosity (Lsol)
 
-    if 'R_star' in keys:
+    if 'R_star' in star_keys:
         R_star = star_dict['R_star'] + 0.0
     else:
         R_star = 1.04      # Stellar radius (Rsol)
 
-    if 'M_star' in keys:
+    if 'M_star' in star_keys:
         M_star = star_dict['M_star'] + 0.0
     else:
         M_star = 0.8        # Stellar mass (Msol)
         
-    if 'dpc' in keys:
+    if 'dpc' in star_keys:
         dpc = star_dict['dpc'] + 0.0
     else:
         dpc = 60           # distance to star (pc)
@@ -74,6 +92,7 @@ def save_mod_params(mod_name, mod_path, star_dict={}):
     inps = ['nr: %1.0f' %(nr), 'ntheta: %1.0f' %(ntheta), 'nphi: 1', 'ped: 0.1',
             'rin: %1.2f  # AU; inner radius' %(r_in),
             'rout: %1.1f  # AU; small dust radius' %(r_out),
+            'rsnow: %1.1f # AU; snow line radius' %(r_snow),
             'r_peb: %1.1f  # AU; mm dust radius' %(r_peb),
             'XH_mid: %1.1f  # scale height midplane to atmosphere' %(XH_mid),
             'XR_mid: %1.2f  # density fraction midplane to atmosphere' %(XR_mid),

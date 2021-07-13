@@ -40,15 +40,15 @@ def setup_uv(mi):
     ########################
 
     # Calculate dust density structure
-    rhodust_list_m  = []
-    rhodust_list_a  = []
+    rhodust_list_m  = []  # midplane
+    rhodust_list_a  = []  # atmosphere
 
     for it, tt in enumerate(tc):
         for ir, rr in enumerate(rc):
             r_cyl = rr*np.sin(tt)
             zz = rr*np.cos(tt)
 
-            rho_atm, rho_mid = rho_dust_2(r_cyl, zz, mi)
+            rho_atm, rho_mid = rho_dust_2(r_cyl, zz, mi) # solves at each cell
             rhodust_list_a.append(rho_atm)
             rhodust_list_m.append(rho_mid)
 

@@ -35,7 +35,7 @@ def plot_model(mi, mod):
     ax[0].set_xlabel("R (AU)")
     ax[0].set_ylabel("Z (AU)", labelpad = 1)
     ax[0].set_xlim((0,mi['rout']))
-    ax[0].set_ylim((-0.1,20))
+    ax[0].set_ylim((-0.1,1.0))#20))
 
     dcmap = mpl.cm.get_cmap('BuPu')
     dcmap.set_under('w')
@@ -52,9 +52,9 @@ def plot_model(mi, mod):
 
     # plot formatting
     ddust_ticks = np.logspace(-22, -14, 5)
-    dgas_ticks = np.logspace(5, 10, 6)
-    tdust_ticks = np.linspace(10, 90, 9)
-    tgas_ticks = np.linspace(10, 90, 9)
+    dgas_ticks = np.logspace(5,14,6) #np.logspace(5, 10, 6)
+    tdust_ticks = np.linspace(30,200,9)#np.linspace(10, 90, 9)
+    tgas_ticks = np.linspace(30,200,9)#np.linspace(10, 90, 9)
 
     ticklist = [ddust_ticks, dgas_ticks, tdust_ticks, tgas_ticks]
     labels = ["Total dust density (g cm$^{-3}$)", "Gas density (cm$^{-3}$)", "Dust temperature (K)",
