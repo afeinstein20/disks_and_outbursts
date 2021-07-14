@@ -7,10 +7,11 @@ from .disk_eqns import *
 __all__ = ['setup_radmc']
 
 def setup_radmc(mi):
-
     # Coordinate generation
-    ri = np.logspace(np.log10(mi["rin"]*au), np.log10(mi["rout"]*au), mi["nr"] + 1) # cell walls
-    rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1])                      # cell centers
+    ri = np.logspace(np.log10(mi["rin"]), np.log10(mi["rout"]), mi["nr"] + 1) # cell walls
+    rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1]) * au                       # cell centers
+    rc = np.append([0], rc)
+    print('cell centers : ', rc/au)
     #ti = np.pi/2 + mi["ped"] - np.logspace(np.log10(mi["ped"]), np.log10(np.pi/2 + mi["ped"]), mi["ntheta"] + 1)[::-1] # spaced from 0 to pi/2, with more cells towards midplane
     ti = np.linspace(np.pi/2-0.7, np.pi/2, mi["ntheta"]+1)
     tc = 0.5 * (ti[0:mi["ntheta"]] + ti[1:mi["ntheta"]+1])

@@ -4,10 +4,11 @@ from .constants import *
 
 __all__ = ['save_mod_params']
 
-def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}):
+def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}, grid_dict={}):
 ####### Fiducial disk parameters (TW Hya-like) #######
     disk_keys = np.array(list(disk_dict.keys()))
     star_keys = np.array(list(star_dict.keys()))
+    grid_keys = np.array(list(grid_dict.keys()))
 
     # disk parameters
     # Huang+ 2018
@@ -19,17 +20,17 @@ def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}):
     if 'r_out' in disk_keys: # Outer (gas disk) radius (AU)
         r_out = disk_dict['r_out'] + 0.0
     else:
-        r_out  = 30
+        r_out  = 200
 
     if 'r_peb' in disk_keys: # Outer (pebble disk) radius (AU)
         r_peb = disk_dict['r_peb'] + 0.0
     else:
-        r_peb  = 30
+        r_peb  = 200
 
     if 'r_snow' in disk_keys: # Snow line radius (AU)
         r_snow = disk_dict['r_snow'] + 0.0
     else:
-        r_snow = 5
+        r_snow = 0
     
     # Cleeves+ 2015
     H_c = 15        # Scale height at R_H AU (AU)
@@ -82,16 +83,25 @@ def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}):
     zq = 4          # temperature coupling scale height
     
     # grid parameters
-    nr = 95
-    ntheta = 80
+    if 'nr' in grid_keys:
+        nr = grid_dict['nr']
+    else:
+        nr = 90
+
+    if 'ntheta' in grid_keys:
+        ntheta = grid_dict['ntheta']
+    else:
+        ntheta = 80
+
+
     nphot = 1000000
 
     ff = os.path.join(mod_path, 'model_inputs.yaml')
     
 
     inps = ['nr: %1.0f' %(nr), 'ntheta: %1.0f' %(ntheta), 'nphi: 1', 'ped: 0.1',
-            'rin: %1.2f  # AU; inner radius' %(r_in),
-            'rout: %1.1f  # AU; small dust radius' %(r_out),
+            'rin: %1.7f  # AU; inner radius' %(r_in),
+            'rout: %1.3f  # AU; small dust radius' %(r_out),
             'rsnow: %1.1f # AU; snow line radius' %(r_snow),
             'r_peb: %1.1f  # AU; mm dust radius' %(r_peb),
             'XH_mid: %1.1f  # scale height midplane to atmosphere' %(XH_mid),

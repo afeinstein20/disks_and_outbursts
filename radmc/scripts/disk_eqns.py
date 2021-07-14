@@ -54,7 +54,9 @@ def rho_dust_2(rr, zz, mi): #radial, scale height, model input
     rho_atm = (1-mi["XR_mid"])*sig_dust/(np.sqrt(2*np.pi)*H_atm)*np.exp(-0.5*(zz/H_atm)**2)
     # density of large grains (not just the midplane)
     rho_mid = mi["XR_mid"]*sig_dust/(np.sqrt(2*np.pi)*H_mid)*np.exp(-0.5*(zz/H_mid)**2)
-    
+
+    print(rr/au, ' & ', zz/au, ' : ', rho_mid)
+
     ## ADDED SNOW LINE ?
     if rr < mi['rsnow']*au:
         rho_atm += rho_mid

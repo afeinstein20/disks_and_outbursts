@@ -13,7 +13,7 @@ from .model_dust_inputstar import setup_uv
 __all__ = ['setup']
 
 def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
-          uv=True, run=True):
+          grid_params={}, uv=True, run=True):
 
 #    sys.path.append(PATH + 'scripts/')
     modpath = os.path.join(PATH, "models/")
@@ -25,6 +25,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
     save_mod_params(mod_name=models[0], 
                     star_dict=star_params, 
                     disk_dict=disk_params,
+                    grid_dict=grid_params,
                     mod_path=os.path.join(modpath, models[0]),
                    )
 
@@ -48,11 +49,9 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
             else:
                 setup_radmc(mi)
 
-"""
             os.system('rm -rf nohup.out')
             os.system('nohup ./radmc3d mctherm')
             print('completed thermal mc')
             save_gasdisk(mi, mod)
 
         plot_model(mi, mod)
-"""
