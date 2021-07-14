@@ -62,7 +62,7 @@ def plot_model(mi, mod):
     dgas_ticks = np.logspace(5,14,6) #np.logspace(5, 10, 6)
     tdust_ticks = np.linspace(30,200,9)#np.linspace(10, 90, 9)
     tgas_ticks = np.linspace(30,200,9)#np.linspace(10, 90, 9)
-    pgas_ticks = np.linspace(-15,20,9)
+    pgas_ticks = np.linspace(-18,25,9)
 
     ticklist = [ddust_ticks, dgas_ticks, tdust_ticks, tgas_ticks, pgas_ticks]
     labels = ["Total dust density (g cm$^{-3}$)", "Gas density (cm$^{-3}$)", "Dust temperature (K)",

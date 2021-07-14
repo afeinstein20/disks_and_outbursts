@@ -48,10 +48,11 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
             else:
                 setup_radmc(mi)
 
-
+"""
             os.system('rm -rf nohup.out')
             os.system('nohup ./radmc3d mctherm')
             print('completed thermal mc')
             save_gasdisk(mi, mod)
 
         plot_model(mi, mod)
+"""
