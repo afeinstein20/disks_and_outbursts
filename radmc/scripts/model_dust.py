@@ -8,13 +8,16 @@ __all__ = ['setup_radmc']
 
 def setup_radmc(mi):
     # Coordinate generation
-    ri = np.logspace(np.log10(mi["rin"]), np.log10(mi["rout"]), mi["nr"] + 1) # cell walls
-    rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1]) * au                       # cell centers
-    rc = np.append([0], rc)
+    ri = np.logspace(np.log10(mi["n_in"]*au), np.log10(mi["rout"]*au), mi["nr"] + 1) # cell walls
+    rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1])                                   # cell centers
     print('cell centers : ', rc/au)
     #ti = np.pi/2 + mi["ped"] - np.logspace(np.log10(mi["ped"]), np.log10(np.pi/2 + mi["ped"]), mi["ntheta"] + 1)[::-1] # spaced from 0 to pi/2, with more cells towards midplane
     ti = np.linspace(np.pi/2-0.7, np.pi/2, mi["ntheta"]+1)
+
     tc = 0.5 * (ti[0:mi["ntheta"]] + ti[1:mi["ntheta"]+1])
+    dtc = tc[1] - tc[0]
+    tc = tc + (dtc/2.0)*0.9
+
     pi = np.array([0.0, 0.0])
     pc = np.array([0.0, 0.0])
 

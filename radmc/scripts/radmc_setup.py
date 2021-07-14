@@ -6,7 +6,7 @@ from .model_dust import setup_radmc
 from .model_gas import save_gasdisk
 import yaml
 from .save_model_params import save_mod_params
-from .plot_summary import plot_model
+from .plot_summary import plot_model, plot_ind_pop
 from .save_spec import save_spectrum
 from .model_dust_inputstar import setup_uv
 
@@ -49,9 +49,14 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
             else:
                 setup_radmc(mi)
 
+        plot_model(mi, mod)
+        plot_ind_pop(mi, mod)
+"""
             os.system('rm -rf nohup.out')
             os.system('nohup ./radmc3d mctherm')
             print('completed thermal mc')
             save_gasdisk(mi, mod)
 
         plot_model(mi, mod)
+        plot_ind_pop(mi, mod)
+"""

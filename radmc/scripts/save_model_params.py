@@ -92,6 +92,11 @@ def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}, grid_dict={}
         ntheta = grid_dict['ntheta']
     else:
         ntheta = 80
+    
+    if 'n_in' in grid_keys:
+        n_in = grid_dict['n_in']
+    else:
+        n_in=r_in+0.0
 
 
     nphot = 1000000
@@ -99,7 +104,9 @@ def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}, grid_dict={}
     ff = os.path.join(mod_path, 'model_inputs.yaml')
     
 
-    inps = ['nr: %1.0f' %(nr), 'ntheta: %1.0f' %(ntheta), 'nphi: 1', 'ped: 0.1',
+    inps = ['nr: %1.0f' %(nr), 'ntheta: %1.0f' %(ntheta), 
+            'n_in: %1.7f # AU; inner grid radius'%(n_in),
+            'nphi: 1', 'ped: 0.1',
             'rin: %1.7f  # AU; inner radius' %(r_in),
             'rout: %1.3f  # AU; small dust radius' %(r_out),
             'rsnow: %1.1f # AU; snow line radius' %(r_snow),
