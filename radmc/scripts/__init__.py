@@ -5,5 +5,6 @@ from .model_gas import *
 from .plot_summary import *
 from .radmc_setup import *
 from .save_model_params import *
+from .save_model_params_herbig import *
 from .save_spec import *
 from .model_dust_inputstar import *
