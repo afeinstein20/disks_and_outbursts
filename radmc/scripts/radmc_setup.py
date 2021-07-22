@@ -6,7 +6,7 @@ from .model_dust import setup_radmc
 from .model_gas import save_gasdisk
 import yaml
 from .save_model_params import save_mod_params
-from .save_model_params import save_mod_params_herbig
+from .save_model_params_herbig import save_mod_params_herbig
 from .plot_summary import plot_model, plot_ind_pop
 from .save_spec import save_spectrum
 from .model_dust_inputstar import setup_uv
@@ -22,14 +22,14 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
         if not os.path.exists('%s%s/' %(modpath, mod)):
             os.system('mkdir %s%s/' %(modpath, mod))
 
-    if disk_type == 'TW Hydra':
+    if disk_type.lower() == 'tw hydra':
         save_mod_params(mod_name=models[0], 
                         star_dict=star_params, 
                         disk_dict=disk_params,
                         grid_dict=grid_params,
                         mod_path=os.path.join(modpath, models[0]),
                         )
-    elif disk_type == 'Herbig':
+    elif disk_type.lower() == 'herbig':
         save_mod_params_herbig(mod_name=models[0],
                                star_dict=star_params,
                                disk_dict=disk_params,

@@ -1,32 +1,36 @@
 import numpy as np
-import sys
+import os, sys
 from .constants import *
 
 __all__ = ['save_mod_params_herbig']
 
-def save_mod_params_herbig(mod_name, mod_path, star_dict={}, disk_dict={}, grid_dict={}):
+def save_mod_params_herbig(mod_name, mod_path, 
+			   star_dict={}, disk_dict={}, grid_dict={}):
+   ## MASSIVE DISK ##
+    disk_keys = np.array(list(disk_dict.keys()))
+    star_keys = np.array(list(star_dict.keys()))
+    grid_keys = np.array(list(grid_dict.keys()))
 
-####### Massive disk structure, modeled of V883 Ori + HD 163296 #######
-# disk parameters
-        if 'r_in' in disk_keys: # Inner radius (AU)
-            r_in = disk_dict['r_in'] + 0.0
-        else:
-            r_in   = 0.05
+    # disk parameters
+    if 'r_in' in disk_keys: # Inner radius (AU)
+       r_in = disk_dict['r_in'] + 0.0
+    else:
+       r_in   = 0.05
 
     if 'r_out' in disk_keys: # Outer (gas disk) radius (AU)
-        r_out = disk_dict['r_out'] + 0.0
+       r_out = disk_dict['r_out'] + 0.0
     else:
-        r_out  = 125
-
+       r_out  = 125
+       
     if 'r_peb' in disk_keys: # Outer (pebble disk) radius (AU)
-        r_peb = disk_dict['r_peb'] + 0.0
+       r_peb = disk_dict['r_peb'] + 0.0
     else:
-        r_peb  = 125
+       r_peb  = 125
 
     if 'r_snow' in disk_keys: # Snow line radius (AU)
-        r_snow = disk_dict['r_snow'] + 0.0
+       r_snow = disk_dict['r_snow'] + 0.0
     else:
-        r_snow = 0
+       r_snow = 0
 
 
     # disk parameters
@@ -99,7 +103,7 @@ def save_mod_params_herbig(mod_name, mod_path, star_dict={}, disk_dict={}, grid_
 
     nphot = 1000000
 
-    ff = '../models/%s/model_inputs.yaml' %(mod_name)
+    ff = os.path.join(mod_path, 'model_inputs.yaml')
 
     inps = ['nr: %1.0f' %(nr), 'ntheta: %1.0f' %(ntheta), 
             'n_in: %1.7f # AU; inner grid radius'%(n_in),
