@@ -1,9 +1,11 @@
 import numpy as np
+
 import csv, os
 from scipy.interpolate import interp1d
 from .constants import *
 
 __all__ = ['BB', 'save_spectrum']
+
 
 def BB(lam,T):
     '''Blackbody at wavelength (microns)'''
@@ -18,7 +20,9 @@ def save_spectrum(mi, specpath, savepath):
 
     ## Read in TW Hya UV spectrum
     uwave, ufl = [],[]
+
     with open(os.path.join(specpath,'twhya_uv.csv'), 'r') as csvfile:
+
         reader = csv.reader(csvfile)
         for row in reader:
             uwave.append(float(row[0]))
@@ -52,6 +56,7 @@ def save_spectrum(mi, specpath, savepath):
                               ufl_scale[400:466:15], ufl_scale[466:470], 
                               ufl_scale[470::4]])
 
+
     ## sample longer wavelengths (um)
     lam1, lam2, lam3, lam4 = 3e-1, 7.0e0, 25.0e1, 1.0e4
     nlam = 15
@@ -73,4 +78,4 @@ def save_spectrum(mi, specpath, savepath):
            [all_lam, fl_pc])
 
     print('saved star spectrum')
-        
+

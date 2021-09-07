@@ -1,5 +1,6 @@
 import numpy as np
 import os
+
 from .constants import *
 import sys
 from .disk_eqns import rho_dust_2, rho_dust_3
@@ -10,6 +11,7 @@ def setup_uv(mi):
 
     # Coordinate generation
     print(mi['rin'], mi['rout'])
+
     ri = np.logspace(np.log10(mi["rin"]*au), np.log10(mi["rout"]*au), mi["nr"] + 1) # cell walls
     rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1])                      # cell centers
     #ti = np.pi/2 + mi["ped"] - np.logspace(np.log10(mi["ped"]), np.log10(np.pi/2 + mi["ped"]), mi["ntheta"] + 1)[::-1] # spaced from 0 to pi/2, with more cells towards midplane
@@ -40,9 +42,11 @@ def setup_uv(mi):
     ########################
 
     # Calculate dust density structure
+
     rhodust_list_m  = []  # midplane
     rhodust_list_a  = []  # atmosphere
     rhodust_list_i  = []
+
 
     for it, tt in enumerate(tc):
         for ir, rr in enumerate(rc):
@@ -69,6 +73,7 @@ def setup_uv(mi):
         for dd in rhodust_list_i:
             ff.write('%13.6e\n' %(dd))
 
+
     ########################
     ###### STAR MODEL ######
     ########################
@@ -78,12 +83,12 @@ def setup_uv(mi):
     flux = starspec[1]
     nlam = lam.size
 
+
     # Write wavelength_micron.inp
     with open('wavelength_micron.inp', 'w+') as ff:
         ff.write('%d\n' %(nlam))
         for ll in lam:
             ff.write('%13.6e\n' %(ll))
-
 
     with open('stars.inp','w+') as ff:
         ff.write('2\n')
@@ -94,6 +99,7 @@ def setup_uv(mi):
             ff.write('%13.6e\n' %(ll))
         for ll in flux:
             ff.write('%13.6e\n' %(ll))
+
 
     ################################
     ###### CONTROL PARAMETERS ######
@@ -114,6 +120,7 @@ def setup_uv(mi):
         ff.write('0               0=Thermal grain\n')
         ff.write('intermediate    Extension of name of dustkappa_***.inp file\n')
         ff.write('----------------------------------------------------------------------------\n')
+
 
     # Write the radmc3d.inp control file
     with open('radmc3d.inp', 'w+') as ff:

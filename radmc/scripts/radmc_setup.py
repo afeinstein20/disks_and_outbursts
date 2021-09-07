@@ -5,6 +5,7 @@ from .constants import *
 from .model_dust import setup_radmc
 from .model_gas import save_gasdisk
 import yaml
+
 from .save_model_params import save_mod_params
 from .save_model_params_herbig import save_mod_params_herbig
 from .plot_summary import plot_model, plot_ind_pop
@@ -12,6 +13,7 @@ from .save_spec import save_spectrum
 from .model_dust_inputstar import setup_uv
 
 __all__ = ['setup']
+
 
 def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=False,
           grid_params={}, uv=True, run=True, disk_type='TW Hydra', nphot=1000000):
@@ -57,6 +59,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=Fa
             os.system('cp %s/dustkappa_atmosphere.inp .' %(PATH))
             os.system('cp %s/dustkappa_midplane.inp .' %(PATH))
             os.system('cp %s/dustkappa_intermediate.inp .' %(PATH))
+
 
             if uv == True:
                 setup_uv(mi)
