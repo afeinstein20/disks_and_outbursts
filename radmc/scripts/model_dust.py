@@ -1,17 +1,23 @@
 import numpy as np
 import os
-from constants import *
+from .constants import *
 import sys
-import disk_eqns as de
+from .disk_eqns import *
+
+__all__ = ['setup_radmc']
 
 def setup_radmc(mi):
-
     # Coordinate generation
-    ri = np.logspace(np.log10(mi["rin"]*au), np.log10(mi["rout"]*au), mi["nr"] + 1) # cell walls
-    rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1])                      # cell centers
+    ri = np.logspace(np.log10(mi["n_in"]*au), np.log10(mi["rout"]*au), mi["nr"] + 1) # cell walls
+    rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1])                                   # cell centers
+    print('cell centers : ', rc/au)
     #ti = np.pi/2 + mi["ped"] - np.logspace(np.log10(mi["ped"]), np.log10(np.pi/2 + mi["ped"]), mi["ntheta"] + 1)[::-1] # spaced from 0 to pi/2, with more cells towards midplane
     ti = np.linspace(np.pi/2-0.7, np.pi/2, mi["ntheta"]+1)
+
     tc = 0.5 * (ti[0:mi["ntheta"]] + ti[1:mi["ntheta"]+1])
+    dtc = tc[1] - tc[0]
+    tc = tc + (dtc/2.0)*0.9
+
     pi = np.array([0.0, 0.0])
     pc = np.array([0.0, 0.0])
 
@@ -39,17 +45,19 @@ def setup_radmc(mi):
     # Calculate dust density structure
     rhodust_list_m  = []
     rhodust_list_a  = []
+    rhodust_list_i  = []
 
     for it, tt in enumerate(tc):
         for ir, rr in enumerate(rc):
             r_cyl = rr*np.sin(tt)
             zz = rr*np.cos(tt)
 
-            rho_atm, rho_mid = de.rho_dust_2(r_cyl, zz, mi)
+            rho_atm, rho_mid, rho_int = rho_dust_3(r_cyl, zz, mi)
             rhodust_list_a.append(rho_atm)
             rhodust_list_m.append(rho_mid)
+            rhodust_list_i.append(rho_int)
 
-    ndust = 2
+    ndust = 3
 
     # Write dust density
     with open('dust_density.inp', 'w+') as ff:
@@ -60,6 +68,8 @@ def setup_radmc(mi):
         for dd in rhodust_list_a:
             ff.write('%13.6e\n' %(dd))
         for dd in rhodust_list_m:
+            ff.write('%13.6e\n' %(dd))
+        for dd in rhodust_list_i:
             ff.write('%13.6e\n' %(dd))
 
     ########################
@@ -105,6 +115,10 @@ def setup_radmc(mi):
         ff.write('1               Way in which this dust species is read\n')
         ff.write('0               0=Thermal grain\n')
         ff.write('midplane        Extension of name of dustkappa_***.inp file\n')
+        ff.write('----------------------------------------------------------------------------\n')
+        ff.write('1               Way in which this dust species is read\n')
+        ff.write('0               0=Thermal grain\n')
+        ff.write('intermediate    Extension of name of dustkappa_***.inp file\n')
         ff.write('----------------------------------------------------------------------------\n')
 
     # Write the radmc3d.inp control file

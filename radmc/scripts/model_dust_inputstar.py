@@ -1,12 +1,17 @@
 import numpy as np
 import os
-from constants import *
-import sys
-import disk_eqns as de
 
-def setup_radmc(mi):
+from .constants import *
+import sys
+from .disk_eqns import rho_dust_2, rho_dust_3
+
+__all__ = ['setup_uv']
+
+def setup_uv(mi):
 
     # Coordinate generation
+    print(mi['rin'], mi['rout'])
+
     ri = np.logspace(np.log10(mi["rin"]*au), np.log10(mi["rout"]*au), mi["nr"] + 1) # cell walls
     rc = 0.5 * (ri[0:mi["nr"]] + ri[1:mi["nr"]+1])                      # cell centers
     #ti = np.pi/2 + mi["ped"] - np.logspace(np.log10(mi["ped"]), np.log10(np.pi/2 + mi["ped"]), mi["ntheta"] + 1)[::-1] # spaced from 0 to pi/2, with more cells towards midplane
@@ -37,19 +42,23 @@ def setup_radmc(mi):
     ########################
 
     # Calculate dust density structure
-    rhodust_list_m  = []
-    rhodust_list_a  = []
+
+    rhodust_list_m  = []  # midplane
+    rhodust_list_a  = []  # atmosphere
+    rhodust_list_i  = []
+
 
     for it, tt in enumerate(tc):
         for ir, rr in enumerate(rc):
             r_cyl = rr*np.sin(tt)
             zz = rr*np.cos(tt)
 
-            rho_atm, rho_mid = de.rho_dust_2(r_cyl, zz, mi)
+            rho_atm, rho_mid, rho_int = rho_dust_3(r_cyl, zz, mi)
             rhodust_list_a.append(rho_atm)
             rhodust_list_m.append(rho_mid)
+            rhodust_list_i.append(rho_int)
 
-    ndust = 2
+    ndust = 3
 
     # Write dust density
     with open('dust_density.inp', 'w+') as ff:
@@ -61,22 +70,25 @@ def setup_radmc(mi):
             ff.write('%13.6e\n' %(dd))
         for dd in rhodust_list_m:
             ff.write('%13.6e\n' %(dd))
+        for dd in rhodust_list_i:
+            ff.write('%13.6e\n' %(dd))
+
 
     ########################
     ###### STAR MODEL ######
     ########################
+    # Write stars
+    starspec = np.loadtxt('starspec.txt')
+    lam = starspec[0]
+    flux = starspec[1]
+    nlam = lam.size
+
 
     # Write wavelength_micron.inp
     with open('wavelength_micron.inp', 'w+') as ff:
         ff.write('%d\n' %(nlam))
         for ll in lam:
             ff.write('%13.6e\n' %(ll))
-
-    # Write stars
-    starspec = np.loadtxt('starspec.txt')
-    lam = starspec[0]
-    flux = starspec[1]
-    nlam = lam.size
 
     with open('stars.inp','w+') as ff:
         ff.write('2\n')
@@ -104,6 +116,11 @@ def setup_radmc(mi):
         ff.write('0               0=Thermal grain\n')
         ff.write('midplane        Extension of name of dustkappa_***.inp file\n')
         ff.write('----------------------------------------------------------------------------\n')
+        ff.write('1               Way in which this dust species is read\n')
+        ff.write('0               0=Thermal grain\n')
+        ff.write('intermediate    Extension of name of dustkappa_***.inp file\n')
+        ff.write('----------------------------------------------------------------------------\n')
+
 
     # Write the radmc3d.inp control file
     with open('radmc3d.inp', 'w+') as ff:

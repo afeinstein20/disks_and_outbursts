@@ -1,7 +1,11 @@
 import numpy as np
-import csv
+
+import csv, os
 from scipy.interpolate import interp1d
-from constants import *
+from .constants import *
+
+__all__ = ['BB', 'save_spectrum']
+
 
 def BB(lam,T):
     '''Blackbody at wavelength (microns)'''
@@ -16,7 +20,9 @@ def save_spectrum(mi, specpath, savepath):
 
     ## Read in TW Hya UV spectrum
     uwave, ufl = [],[]
-    with open(specpath + 'twhya_uv.csv', 'r') as csvfile:
+
+    with open(os.path.join(specpath,'twhya_uv.csv'), 'r') as csvfile:
+
         reader = csv.reader(csvfile)
         for row in reader:
             uwave.append(float(row[0]))
@@ -43,8 +49,13 @@ def save_spectrum(mi, specpath, savepath):
     ufl_scale = ufl_erg * facu
 
     ## downsample uv spectrum
-    ulam_out = np.concatenate([uwave_um[:340:15], uwave_um[340:400:4], uwave_um[400:466:15], uwave_um[466:470], uwave_um[470::4]])
-    ufl_out = np.concatenate([ufl_scale[:340:15], ufl_scale[340:400:4], ufl_scale[400:466:15], ufl_scale[466:470], ufl_scale[470::4]])
+    ulam_out = np.concatenate([uwave_um[:340:15], uwave_um[340:400:4], 
+                               uwave_um[400:466:15], uwave_um[466:470], 
+                               uwave_um[470::4]])
+    ufl_out = np.concatenate([ufl_scale[:340:15], ufl_scale[340:400:4], 
+                              ufl_scale[400:466:15], ufl_scale[466:470], 
+                              ufl_scale[470::4]])
+
 
     ## sample longer wavelengths (um)
     lam1, lam2, lam3, lam4 = 3e-1, 7.0e0, 25.0e1, 1.0e4
@@ -67,3 +78,4 @@ def save_spectrum(mi, specpath, savepath):
            [all_lam, fl_pc])
 
     print('saved star spectrum')
+
