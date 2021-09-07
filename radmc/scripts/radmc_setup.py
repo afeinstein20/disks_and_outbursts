@@ -13,8 +13,8 @@ from .model_dust_inputstar import setup_uv
 
 __all__ = ['setup']
 
-def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
-          grid_params={}, uv=True, run=True, disk_type='TW Hydra'):
+def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=False,
+          grid_params={}, uv=True, run=True, disk_type='TW Hydra', nphot=1000000):
 
     modpath = os.path.join(PATH, "models/")
     
@@ -24,6 +24,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
 
     if disk_type.lower() == 'tw hydra':
         save_mod_params(mod_name=models[0], 
+                        nphot=nphot,
                         star_dict=star_params, 
                         disk_dict=disk_params,
                         grid_dict=grid_params,
@@ -31,10 +32,12 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
                         )
     elif disk_type.lower() == 'herbig':
         save_mod_params_herbig(mod_name=models[0],
+                               nphot=nphot,
                                star_dict=star_params,
                                disk_dict=disk_params,
                                grid_dict=grid_params,
                                mod_path=os.path.join(modpath, models[0]),
+                               bursting=bursting
                                )
     else:
         print("Disk type not implemented yet.")
@@ -53,7 +56,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={},
 
             os.system('cp %s/dustkappa_atmosphere.inp .' %(PATH))
             os.system('cp %s/dustkappa_midplane.inp .' %(PATH))
-
+            os.system('cp %s/dustkappa_intermediate.inp .' %(PATH))
 
             if uv == True:
                 setup_uv(mi)

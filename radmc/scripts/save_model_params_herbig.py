@@ -4,7 +4,7 @@ from .constants import *
 
 __all__ = ['save_mod_params_herbig']
 
-def save_mod_params_herbig(mod_name, mod_path, 
+def save_mod_params_herbig(mod_name, mod_path, nphot=1000000, bursting=False,
 			   star_dict={}, disk_dict={}, grid_dict={}):
    ## MASSIVE DISK ##
     disk_keys = np.array(list(disk_dict.keys()))
@@ -32,7 +32,6 @@ def save_mod_params_herbig(mod_name, mod_path,
     else:
        r_snow = 0
 
-
     # disk parameters
     H_c = 16        # Scale height at R_H AU (AU); for MWC 480, Rosenfeld 2013
     R_H = 150       # Characteristic radius for scale height (AU); for MWC 480, Rosenfeld 2013
@@ -54,14 +53,18 @@ def save_mod_params_herbig(mod_name, mod_path,
         L_star = star_dict['L_star'] + 0.0
     else:
         L_star = 6      # Stellar bolometric luminosity (Lsol) **unbursting. Observed = 400 lsol, Cieza 2016
-    # L_star = 400   # bursting luminosity, Cieza 2016/Sandell 2001 
+
+    if bursting:
+        L_star = 400   # bursting luminosity, Cieza 2016/Sandell 2001 
 
     if 'L_uv_star' in star_keys:
         L_uv_star = star_dict['L_uv_star']/lsol + 0.0
     else:
         L_uv_star = 4e-2  # Stellar UV luminosity (Lsol) **unbursting. Adopted from HD 163296, Donehew 2011
         
-#L_uv_star = 6    # bursting FUV luminosity, found from mass accretion rate (Cieza 2016, Gullbring 1998, Yang 2012). Should be double checked
+    if bursting:
+        L_uv_star = 6    # bursting FUV luminosity, found from mass accretion rate (Cieza 2016, Gullbring 1998, Yang 2012). Should be double checked
+
     if 'R_star' in star_keys:
         R_star = star_dict['R_star'] + 0.0
     else:
@@ -99,9 +102,6 @@ def save_mod_params_herbig(mod_name, mod_path,
         n_in = grid_dict['n_in']
     else:
         n_in=r_in+0.0
-
-
-    nphot = 1000000
 
     ff = os.path.join(mod_path, 'model_inputs.yaml')
 

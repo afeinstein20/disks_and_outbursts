@@ -4,7 +4,7 @@ import radmc3dPy as rmc
 from scipy.integrate import odeint, simps, quad
 from scipy.interpolate import interp1d
 
-__all__ = ['Tdust', 'sigma_dust', 'rho_dust_2', 'sigma_gas', 'T_rho_gas']
+__all__ = ['Tdust', 'sigma_dust', 'rho_dust_2', 'sigma_gas', 'T_rho_gas', 'rho_dust_3']
            
 
 def Tdust(rr, zz):
@@ -64,6 +64,37 @@ def rho_dust_2(rr, zz, mi): #radial, scale height, model input
         rho_mid = 0.0
 
     return rho_atm, rho_mid
+
+def rho_dust_3(rr, zz, mi):
+    ### HANDLES 3 DUST POPULATIONS
+    delt = 1.0
+    # cut off density beyond inner & outer radii
+    if rr < mi["rin"]*au:
+        delt = 0.0
+    if rr > mi['rout']*au:
+        delt = 0.0
+
+    sig_dust = sigma_dust(rr, mi["sigma_c"], mi["r_c"]*au, mi["gam"])*delt
+    H_atm = mi["H_c"]*au*(rr/(mi["R_H"]*au))**mi["hh"]
+    H_mid = mi["XH_mid"]*H_atm
+
+    # density of small grains                     
+    rho_atm = (1-mi["XR_mid"])*sig_dust/(np.sqrt(2*np.pi)*H_atm)*np.exp(-0.5*(zz/H_atm)**2)
+    # density of large grains (not just the midplane)
+    rho_mid = mi["XR_mid"]*sig_dust/(np.sqrt(2*np.pi)*H_mid)*np.exp(-0.5*(zz/H_mid)**2)
+    # density of intermediate grains
+    rho_int = 0.0
+
+    ## ADDED SNOW LINE ?                                                                                                                                       
+    if rr < mi['rsnow']*au:
+        rho_int += (rho_atm + rho_mid)
+        rho_atm = 0.0
+        rho_int = 0.0
+
+    if rr > mi["r_peb"]*au:
+        rho_mid = 0.0
+
+    return rho_atm, rho_mid, rho_int
 
 def sigma_gas(rr, mi):
     '''Gas surface density at radius rr, assuming vertically integrated gas:dust ratio of 100:1

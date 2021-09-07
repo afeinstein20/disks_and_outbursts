@@ -4,7 +4,8 @@ from .constants import *
 
 __all__ = ['save_mod_params']
 
-def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}, grid_dict={}):
+def save_mod_params(mod_name, mod_path, nphot=1000000,
+                    star_dict={}, disk_dict={}, grid_dict={}):
 ####### Fiducial disk parameters (TW Hya-like) #######
     disk_keys = np.array(list(disk_dict.keys()))
     star_keys = np.array(list(star_dict.keys()))
@@ -35,7 +36,7 @@ def save_mod_params(mod_name, mod_path, star_dict={}, disk_dict={}, grid_dict={}
     # Cleeves+ 2015
     H_c = 15        # Scale height at R_H AU (AU)
     R_H = 150       # Characteristic radius for scale height (AU)
-    hh = 1.3        # Scale height gradient
+    hh = 1.3        # Scale height gradient 
     sigma_c = 0.04   # Characteristic *dust* surface density at R_c AU (g cm^-2)
     R_c = 150       # Characteristic radius for surface density (AU)
     gam = 1.       # Surface density gradient

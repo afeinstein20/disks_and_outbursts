@@ -2,7 +2,7 @@ import numpy as np
 import os
 from .constants import *
 import sys
-from .disk_eqns import rho_dust_2
+from .disk_eqns import rho_dust_2, rho_dust_3
 
 __all__ = ['setup_uv']
 
@@ -42,17 +42,19 @@ def setup_uv(mi):
     # Calculate dust density structure
     rhodust_list_m  = []  # midplane
     rhodust_list_a  = []  # atmosphere
+    rhodust_list_i  = []
 
     for it, tt in enumerate(tc):
         for ir, rr in enumerate(rc):
             r_cyl = rr*np.sin(tt)
             zz = rr*np.cos(tt)
 
-            rho_atm, rho_mid = rho_dust_2(r_cyl, zz, mi) # solves at each cell
+            rho_atm, rho_mid, rho_int = rho_dust_3(r_cyl, zz, mi)
             rhodust_list_a.append(rho_atm)
             rhodust_list_m.append(rho_mid)
+            rhodust_list_i.append(rho_int)
 
-    ndust = 2
+    ndust = 3
 
     # Write dust density
     with open('dust_density.inp', 'w+') as ff:
@@ -63,6 +65,8 @@ def setup_uv(mi):
         for dd in rhodust_list_a:
             ff.write('%13.6e\n' %(dd))
         for dd in rhodust_list_m:
+            ff.write('%13.6e\n' %(dd))
+        for dd in rhodust_list_i:
             ff.write('%13.6e\n' %(dd))
 
     ########################
@@ -105,6 +109,10 @@ def setup_uv(mi):
         ff.write('1               Way in which this dust species is read\n')
         ff.write('0               0=Thermal grain\n')
         ff.write('midplane        Extension of name of dustkappa_***.inp file\n')
+        ff.write('----------------------------------------------------------------------------\n')
+        ff.write('1               Way in which this dust species is read\n')
+        ff.write('0               0=Thermal grain\n')
+        ff.write('intermediate    Extension of name of dustkappa_***.inp file\n')
         ff.write('----------------------------------------------------------------------------\n')
 
     # Write the radmc3d.inp control file
