@@ -42,6 +42,8 @@ def save_mod_params_herbig(mod_name, mod_path, nphot=1000000,
         hh = hh + 0.0
     else:
         hh = 1.35        # Scale height gradient; for MWC 480, Rosenfeld 2013
+    print(hh)
+
     sigma_c = 0.5   # Characteristic *dust* surface density at R_c AU (g cm^-2), Schoonenberg 2017
     R_c = 40       # Characteristic radius for surface density (AU), Schoonenberg 2017
     gam = 1.5       # Surface density gradient, Schoonenberg 2017
