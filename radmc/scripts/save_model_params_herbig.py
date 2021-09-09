@@ -64,7 +64,7 @@ def save_mod_params_herbig(mod_name, mod_path, nphot=1000000,
         L_star = 400   # bursting luminosity, Cieza 2016/Sandell 2001 
 
     if 'L_uv_star' in star_keys:
-        L_uv_star = star_dict['L_uv_star']/lsol + 0.0
+        L_uv_star = star_dict['L_uv_star'] #* lsol + 0.0
     else:
         L_uv_star = 4e-2  # Stellar UV luminosity (Lsol) **unbursting. Adopted from HD 163296, Donehew 2011
         
