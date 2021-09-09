@@ -4,7 +4,8 @@ from .constants import *
 
 __all__ = ['save_mod_params_herbig']
 
-def save_mod_params_herbig(mod_name, mod_path, nphot=1000000, bursting=False,
+def save_mod_params_herbig(mod_name, mod_path, nphot=1000000, 
+                           hh=None, bursting=False,
 			   star_dict={}, disk_dict={}, grid_dict={}):
    ## MASSIVE DISK ##
     disk_keys = np.array(list(disk_dict.keys()))
@@ -33,9 +34,14 @@ def save_mod_params_herbig(mod_name, mod_path, nphot=1000000, bursting=False,
        r_snow = 0
 
     # disk parameters
+    ## scale height given for the fine dust
     H_c = 16        # Scale height at R_H AU (AU); for MWC 480, Rosenfeld 2013
     R_H = 150       # Characteristic radius for scale height (AU); for MWC 480, Rosenfeld 2013
-    hh = 1.35        # Scale height gradient; for MWC 480, Rosenfeld 2013
+
+    if hh is not None:
+        hh = hh + 0.0
+    else:
+        hh = 1.35        # Scale height gradient; for MWC 480, Rosenfeld 2013
     sigma_c = 0.5   # Characteristic *dust* surface density at R_c AU (g cm^-2), Schoonenberg 2017
     R_c = 40       # Characteristic radius for surface density (AU), Schoonenberg 2017
     gam = 1.5       # Surface density gradient, Schoonenberg 2017

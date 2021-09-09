@@ -15,8 +15,8 @@ def setup_radmc(mi):
     ti = np.linspace(np.pi/2-0.7, np.pi/2, mi["ntheta"]+1)
 
     tc = 0.5 * (ti[0:mi["ntheta"]] + ti[1:mi["ntheta"]+1])
-    dtc = tc[1] - tc[0]
-    tc = tc + (dtc/2.0)*0.9
+#    dtc = tc[1] - tc[0]
+#    tc = tc + (dtc/2.0)*0.9
 
     pi = np.array([0.0, 0.0])
     pc = np.array([0.0, 0.0])

@@ -16,7 +16,8 @@ __all__ = ['setup']
 
 
 def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=False,
-          grid_params={}, uv=True, run=True, disk_type='TW Hydra', nphot=1000000):
+          hh=None, ndust=2, uv=True, run=True,
+          grid_params={}, disk_type='TW Hydra', nphot=1000000):
 
     modpath = os.path.join(PATH, "models/")
     
@@ -35,6 +36,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=Fa
     elif disk_type.lower() == 'herbig':
         save_mod_params_herbig(mod_name=models[0],
                                nphot=nphot,
+                               hh=hh,
                                star_dict=star_params,
                                disk_dict=disk_params,
                                grid_dict=grid_params,
@@ -62,7 +64,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=Fa
 
 
             if uv == True:
-                setup_uv(mi)
+                setup_uv(mi, ndust)
             else:
                 setup_radmc(mi)
 

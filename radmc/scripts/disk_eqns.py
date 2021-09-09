@@ -89,7 +89,7 @@ def rho_dust_3(rr, zz, mi):
     if rr < mi['rsnow']*au:
         rho_int += (rho_atm + rho_mid)
         rho_atm = 0.0
-        rho_int = 0.0
+        rho_mid = 0.0
 
     if rr > mi["r_peb"]*au:
         rho_mid = 0.0
