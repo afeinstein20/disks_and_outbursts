@@ -79,7 +79,10 @@ def save_gasdisk(mi, mod):
             data_i = data_i/(2.37*mH) # gas density to cm^-3
         datadict[dname] = data_i
 
-    with open('diskdata.pkl', 'wb') as savefile:
+    with open('diskdata_interpolated.pkl', 'wb') as savefile:
         pickle.dump([datadict['ddustsm'], datadict['ddustlg'], datadict['tdustsm'], datadict['tdustlg'],
             datadict['dgas'], datadict['tgas'], re, ze], savefile)
+
+    with open('diskdata_raw.pkl', 'wb') as savefile:
+        pickle.dump([ddustsm, ddustlg, tdustsm, tdustlg, tgas, dgas, rr, zz], savefile)
     print('Saved gas disk data')
