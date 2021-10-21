@@ -28,7 +28,8 @@ __all__ = ['plot_model', 'pressure_profile', 'plot_ind_pop']
 def plot_model(mi, mod):
 
     # load disk data
-    with open('diskdata.pkl', 'rb') as infile:
+    fn = 'diskdata_interpolated.pkl'
+    with open(fn, 'rb') as infile:
         diskinp = pickle.load(infile)
         ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, re, ze = diskinp
     pgas = pressure_profile(dgas*units.g/units.cm**3,
@@ -107,7 +108,7 @@ def pressure_profile(rho, T, mu=2.3):
 def plot_ind_pop(mi, mod):
 
     # load disk data     
-    with open('diskdata.pkl', 'rb') as infile:
+    with open('diskdata_interpolated.pkl', 'rb') as infile:
         diskinp = pickle.load(infile)
         ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, re, ze = diskinp
     pgas = pressure_profile(dgas*units.g/units.cm**3,

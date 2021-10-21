@@ -4,7 +4,7 @@ from .constants import *
 
 __all__ = ['save_mod_params']
 
-def save_mod_params(mod_name, mod_path, nphot=1000000,
+def save_mod_params(mod_name, mod_path, nphot=1000000, hh=None,
                     star_dict={}, disk_dict={}, grid_dict={}):
 ####### Fiducial disk parameters (TW Hya-like) #######
     disk_keys = np.array(list(disk_dict.keys()))
@@ -36,7 +36,13 @@ def save_mod_params(mod_name, mod_path, nphot=1000000,
     # Cleeves+ 2015
     H_c = 15        # Scale height at R_H AU (AU)
     R_H = 150       # Characteristic radius for scale height (AU)
-    hh = 1.3        # Scale height gradient 
+
+    if hh is None:
+        hh = 1.3        # Scale height gradient 
+    else:
+        hh = hh + 0.0
+    print(hh)
+
     sigma_c = 0.04   # Characteristic *dust* surface density at R_c AU (g cm^-2)
     R_c = 150       # Characteristic radius for surface density (AU)
     gam = 1.       # Surface density gradient
@@ -77,7 +83,11 @@ def save_mod_params(mod_name, mod_path, nphot=1000000,
 
     # gas parameters
     # from Huang+2018
-    Tc_atm = 125    # Characteristic atmosphere temperature (K) at R_T AU
+    if 'Tc_atm' in disk_keys:
+        Tc_atm = disk_dict['Tc_atm']
+    else:
+        Tc_atm = 125    # Characteristic atmosphere temperature (K) at R_T AU
+
     R_T = 10        # Characteristic radius for temperature (AU)
     q_atm = 0.47     # Atmosphere temperature gradient
     delta = 2.0     # Shape of vertical temperature gradient

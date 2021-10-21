@@ -27,7 +27,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=Fa
 
     if disk_type.lower() == 'tw hydra':
         save_mod_params(mod_name=models[0], 
-                        nphot=nphot,
+                        nphot=nphot, hh=hh,
                         star_dict=star_params, 
                         disk_dict=disk_params,
                         grid_dict=grid_params,

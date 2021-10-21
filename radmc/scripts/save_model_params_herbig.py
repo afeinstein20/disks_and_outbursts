@@ -89,7 +89,8 @@ def save_mod_params_herbig(mod_name, mod_path, nphot=1000000,
         dpc = 60           # distance to star (pc)
 
     # gas parameters
-    Tc_atm = 250    # Characteristic atmosphere temperature (K) at R_T AU
+    ## MAYBE CHANGE THIS TO SCALE WITH THE LUMINOSITY ???? ##
+    Tc_atm = 2000    # Characteristic atmosphere temperature (K) at R_T AU
     R_T = 10        # Characteristic radius for temperature (AU)
     q_atm = 0.5     # Atmosphere temperature gradient
     delta = 2.0     # Shape of vertical temperature gradient

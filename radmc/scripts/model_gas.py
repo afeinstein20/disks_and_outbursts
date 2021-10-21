@@ -33,18 +33,19 @@ def save_gasdisk(mi, mod):
     dgas = np.zeros_like(zz)
 
     ## Calculate gas densities and intensity field
+    ## Calculate gas densities and intensity field
+    iz = np.argmin(np.abs(theta-np.pi/2))
+    tdust_mid = data.dusttemp[:,iz,0,1]
     kk = 0
     for jj in range(grid.ny):
         for ii in range(grid.nx):
             zz[kk] = rx[ii]*np.cos(theta[jj])
             rr[kk] = rx[ii]*np.sin(theta[jj])
-
             tdustsm[kk] = data.dusttemp[ii,jj,0,0]
             tdustlg[kk] = data.dusttemp[ii,jj,0,1]
             ddustsm[kk] = data.rhodust[ii,jj,0,0]
             ddustlg[kk] =  data.rhodust[ii,jj,0,1]
-            tgas[kk], dgas[kk] = T_rho_gas(rr[kk], zz[kk], tdustsm[kk], mi)
-
+            tgas[kk], dgas[kk] = T_rho_gas(rr[kk], zz[kk], tdust_mid[ii], mi)
             kk += 1
 
     # R, Z in AU units and sorted low to high
@@ -84,5 +85,5 @@ def save_gasdisk(mi, mod):
             datadict['dgas'], datadict['tgas'], re, ze], savefile)
 
     with open('diskdata_raw.pkl', 'wb') as savefile:
-        pickle.dump([ddustsm, ddustlg, tdustsm, tdustlg, tgas, dgas, rr, zz], savefile)
+        pickle.dump([ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, rr, zz], savefile)
     print('Saved gas disk data')

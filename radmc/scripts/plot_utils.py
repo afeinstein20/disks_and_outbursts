@@ -59,7 +59,7 @@ def scale_height(r, midplane, mstar, mu=2.3):
     Calculates the scale height. Takes r (radius, in AU), the midplane temperature (K),
     and the mass of the star (solar masses).
     """
-    Tm = np.nanmedian(midplane)*units.K
+    Tm = np.nanmean(midplane)*units.K
     r = r * units.AU
     mstar = mstar * units.Msun
     
