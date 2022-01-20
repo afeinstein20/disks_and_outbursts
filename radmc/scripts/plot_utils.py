@@ -118,7 +118,7 @@ def plot_contour(data, cmap, ticks, ax, label, index=5, contourcolor=['k'],
     return
 
 
-def make_line_profiles(data, index, zrs=[0,0.1,0.2,0.3,0.4], p=None,
+def make_line_profiles(data, r, z, zrs=[0,0.1,0.2,0.3,0.4],
                        ntheta=90, nr=110):
     """
     Plots the line countours at a given z/r location
@@ -127,13 +127,11 @@ def make_line_profiles(data, index, zrs=[0,0.1,0.2,0.3,0.4], p=None,
        index : which index to access within the data structure
     """
     
-    r2d = data[-2].reshape(ntheta,nr)
-    z2d = data[-1].reshape(ntheta,nr)
+    r2d = r.reshape(ntheta,nr)
+    z2d = z.reshape(ntheta,nr)
 
-    if p is None:
-        var2d = data[index].reshape(ntheta,nr)
-    else:
-        var2d = p.reshape(ntheta,nr)
+    var2d = data.reshape(ntheta,nr)
+
 
     zvals = []
     rvals = []
