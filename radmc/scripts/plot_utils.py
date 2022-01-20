@@ -20,14 +20,9 @@ def open_raw(path):
     Opens the non-interpolated radmc output file. Takes the path
     to where the files are stored.
     """
-    try:
-        with open(os.path.join(path,'distdata_raw.pkl'), 'rb') as infile:
-                  diskinp = pickle.load(infile)
-                  ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, re, ze = diskinp
-    except:
-        with open(os.path.join(path,'diskdata_raw.pkl'), 'rb') as infile:
-                  diskinp = pickle.load(infile)
-                  ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, re, ze = diskinp
+    with open(os.path.join(path, 'diskdata_raw.pkl'), 'rb') as infile:
+        diskinp = pickle.load(infile)
+        ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, re, ze = diskinp
     return ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, re, ze
 
 def open_interp(path):

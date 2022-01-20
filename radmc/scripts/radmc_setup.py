@@ -16,7 +16,7 @@ __all__ = ['setup']
 
 
 def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=False,
-          hh=None, ndust=2, uv=True, run=True,
+          hh=None, ndust=2, uv=True, run=True, H_c=None,
           grid_params={}, disk_type='TW Hydra', nphot=1000000):
 
     modpath = os.path.join(PATH, "models/")
@@ -27,7 +27,7 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=Fa
 
     if disk_type.lower() == 'tw hydra':
         save_mod_params(mod_name=models[0], 
-                        nphot=nphot, hh=hh,
+                        nphot=nphot, hh=hh, H_c=H_c,
                         star_dict=star_params, 
                         disk_dict=disk_params,
                         grid_dict=grid_params,
@@ -76,6 +76,6 @@ def setup(PATH, models=['fiducial'], star_params={}, disk_params={}, bursting=Fa
             print('completed thermal mc')
             save_gasdisk(mi, mod)
 
-        plot_model(mi, mod)
-        plot_ind_pop(mi, mod)
+#        plot_model(mi, mod)
+#        plot_ind_pop(mi, mod)
 
