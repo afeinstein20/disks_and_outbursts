@@ -85,5 +85,6 @@ def save_gasdisk(mi, mod):
             datadict['dgas'], datadict['tgas'], re, ze], savefile)
 
     with open('diskdata_raw.pkl', 'wb') as savefile:
-        pickle.dump([ddustsm, ddustlg, tdustsm, tdustlg, dgas, tgas, rr, zz], savefile)
+        print('saved raw')
+        pickle.dump([ddustsm, ddustlg, tdustsm, tdustlg, dgas/(2.37*mH), tgas, rr, zz], savefile)
     print('Saved gas disk data')

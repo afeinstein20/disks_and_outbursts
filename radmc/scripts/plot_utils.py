@@ -134,6 +134,7 @@ def make_line_profiles(data, index, zrs=[0,0.1,0.2,0.3,0.4], p=None,
     
     r2d = data[-2].reshape(ntheta,nr)
     z2d = data[-1].reshape(ntheta,nr)
+
     if p is None:
         var2d = data[index].reshape(ntheta,nr)
     else:

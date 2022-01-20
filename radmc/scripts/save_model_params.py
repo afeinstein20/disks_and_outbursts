@@ -5,7 +5,7 @@ from .constants import *
 __all__ = ['save_mod_params']
 
 def save_mod_params(mod_name, mod_path, nphot=1000000, hh=None,
-                    star_dict={}, disk_dict={}, grid_dict={}):
+                    H_c=None,star_dict={}, disk_dict={}, grid_dict={}):
 ####### Fiducial disk parameters (TW Hya-like) #######
     disk_keys = np.array(list(disk_dict.keys()))
     star_keys = np.array(list(star_dict.keys()))
@@ -34,20 +34,23 @@ def save_mod_params(mod_name, mod_path, nphot=1000000, hh=None,
         r_snow = 0
     
     # Cleeves+ 2015
-    H_c = 15        # Scale height at R_H AU (AU)
+    if H_c is None:
+        H_c = 15        # Scale height at R_H AU (AU)
+    else:
+        H_c = H_c + 0.0
+
     R_H = 150       # Characteristic radius for scale height (AU)
 
     if hh is None:
         hh = 1.3        # Scale height gradient 
     else:
         hh = hh + 0.0
-    print(hh)
 
     sigma_c = 0.04   # Characteristic *dust* surface density at R_c AU (g cm^-2)
     R_c = 150       # Characteristic radius for surface density (AU)
-    gam = 1.       # Surface density gradient
-    XH_mid = 0.2   # scale height midplane to atmosphere
-    XR_mid = 0.9  # density fraction midplane to atmosphere'
+    gam = 1.        # Surface density gradient
+    XH_mid = 0.2    # scale height midplane to atmosphere
+    XR_mid = 0.9    # density fraction midplane to atmosphere'
     
     # star parameters
     # Cleeves+ 2015
@@ -89,7 +92,7 @@ def save_mod_params(mod_name, mod_path, nphot=1000000, hh=None,
         Tc_atm = 125    # Characteristic atmosphere temperature (K) at R_T AU
 
     R_T = 10        # Characteristic radius for temperature (AU)
-    q_atm = 0.47     # Atmosphere temperature gradient
+    q_atm = 0.47    # Atmosphere temperature gradient
     delta = 2.0     # Shape of vertical temperature gradient
     zq = 4          # temperature coupling scale height
     
@@ -145,7 +148,6 @@ def save_mod_params(mod_name, mod_path, nphot=1000000, hh=None,
             'nphot: %1.0f' %(nphot)
             ]
     
-    print(ff)
     with open(ff, 'w+') as wfile:
         wfile.write('# %s model inputs\n' %(mod_name))
         for ii in inps:
