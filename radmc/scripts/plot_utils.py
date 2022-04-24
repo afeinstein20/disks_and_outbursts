@@ -13,7 +13,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 __all__ = ['open_raw', 'open_interp', 'pressure_profile', 'scale_height',
-           'plot_contour', 'make_line_profiles']
+           'plot_contour', 'make_zR_profiles', 'make_zH_profiles']
 
 def open_raw(path):
     """ 
@@ -118,7 +118,7 @@ def plot_contour(data, cmap, ticks, ax, label, index=5, contourcolor=['k'],
     return
 
 
-def make_line_profiles(data, r, z, zrs=[0,0.1,0.2,0.3,0.4],
+def make_zR_profiles(data, r, z, zrs=[0,0.1,0.2,0.3,0.4],
                        ntheta=90, nr=110):
     """
     Plots the line countours at a given z/r location
@@ -132,7 +132,6 @@ def make_line_profiles(data, r, z, zrs=[0,0.1,0.2,0.3,0.4],
 
     var2d = data.reshape(ntheta,nr)
 
-
     zvals = []
     rvals = []
     var_slices = []
@@ -143,3 +142,22 @@ def make_line_profiles(data, r, z, zrs=[0,0.1,0.2,0.3,0.4],
         zvals.append(z2d[vv])
         
     return rvals, zvals, var_slices
+
+def make_zH_profiles(data, r, z, Hc, zHs=[1,2,3],
+                     ntheta=90, nr=110):
+    
+    r2d = r.reshape(ntheta,nr)
+    z2d = z.reshape(ntheta,nr)
+    
+    var2d = data.reshape(ntheta,nr)
+
+    zvals = []
+    rvals = []
+    var_slices = []
+    for nn in zHs:
+        vv = np.argmin(np.abs(z2d/Hc-nn),axis=1)[0]
+        var_slices.append(var2d[vv])
+        rvals.append(r2d[vv])
+        zvals.append(z2d[vv])
+
+    return
